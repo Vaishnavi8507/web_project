@@ -20,7 +20,7 @@
             left: 0;
             top: 0;
             width: 100%;
-            height: 90%;
+            height: 100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.4);
         }
@@ -31,7 +31,7 @@
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            max-width: 300px;
+            max-width: 400px;
             text-align: center;
         }
 
@@ -47,6 +47,33 @@
             color: black;
             text-decoration: none;
             cursor: pointer;
+        }
+
+        /* Icon Styles */
+        .icon {
+            margin-right: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label {
+            flex: 0 0 30px;
+            /* Adjust based on icon size */
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -74,7 +101,6 @@
                 </div>
             </nav>
         </header>
-
         <!-- hero-content  -->
 
         <section class="hero">
@@ -103,12 +129,87 @@
 
     <!-- Modal -->
     <div id="myModal" class="modal">
-        <!-- Modal content -->
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>Choose Account Type</h2>
-                <button class="btn btn-primary">Patient</button>
-                <button class="btn btn-primary">Doctor</button>
+            <h3>Choose Account Type</h3>
+            <button class="btn btn-primary" id="patientBtn"><i class="fas fa-user icon"></i>Patient</button>
+            <button class="btn btn-primary" id="doctorBtn"><i class="fas fa-user-md icon"></i>Doctor</button>
+
+            <!-- Patient Form -->
+            <div id="patientForm" style="display: none;">
+                <h3>Patient Signup</h3>
+                <form id="patientSignupForm" method="post" onsubmit="savePatientFormData(event)">
+                    <div class="form-group">
+                        <label for="patientName"><i class="fas fa-user icon"></i></label>
+                        <input type="text" placeholder="Name" id="patientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientEmail"><i class="fas fa-envelope icon"></i></label>
+                        <input type="email" placeholder="Email" id="patientEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientPassword"><i class="fas fa-lock icon"></i></label>
+                        <input type="password" placeholder="Password" id="patientPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientPhone"><i class="fas fa-phone icon"></i></label>
+                        <input type="text" placeholder="Phone" id="patientPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientDOB"><i class="far fa-calendar-alt icon"></i></label>
+                        <input type="date" placeholder="Date of Birth" id="patientDOB" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientAddress"><i class="fas fa-map-marker-alt icon"></i></label>
+                        <input type="text" placeholder="Address" id="patientAddress" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Signup</button>
+                </form>
+            </div>
+
+            <!-- Doctor Form -->
+            <div id="doctorForm" style="display: none;">
+                <h3>Doctor Signup</h3>
+                <form id="doctorSignupForm" onsubmit="saveDoctorFormData(event)">
+                    <div class="form-group">
+                        <label for="doctorName"><i class="fas fa-user-md icon"></i></label>
+                        <input type="text" placeholder="Name" id="doctorName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorEmail"><i class="fas fa-envelope icon"></i></label>
+                        <input type="email" placeholder="Email" id="doctorEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorPassword"><i class="fas fa-lock icon"></i></label>
+                        <input type="password" placeholder="Password" id="doctorPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorSpecialization"><i class="fas fa-user-tag icon"></i></label>
+                        <input type="text" placeholder="Specialization" id="doctorSpecialization" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorAvailability"><i class="far fa-calendar-check icon"></i></label>
+                        <input type="text" placeholder="Availability" id="doctorAvailability" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Signup</button>
+                </form>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <h3>Login</h3>
+                <form id="loginFormContent" onsubmit="submitLoginForm(event)">
+                    <div class="form-group">
+                        <label for="loginEmail"><i class="fas fa-envelope icon"></i></label>
+                        <input type="email" placeholder="Email" id="loginEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword"><i class="fas fa-lock icon"></i></label>
+                        <input type="password" placeholder="Password" id="loginPassword">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -349,13 +450,9 @@
                 </div>
             </div>
         </div>
-
-
     </footer>
 
-    <script src="js/wow.min.js"></script>
     <script>
-        new WOW().init();
         // Get the modal
         var modal = document.getElementById("myModal");
 
@@ -366,12 +463,16 @@
         // Get the <span> element that closes the modal
         var span = document.getElementsByClassName("close")[0];
 
-        // When the user clicks the button, open the modal 
+        // When the user clicks the button to open the modal
         signupBtn.onclick = function () {
             modal.style.display = "block";
+            // Hide the login form
+            document.getElementById("loginForm").style.display = "none";
         }
+
         loginBtn.onclick = function () {
             modal.style.display = "block";
+            showLoginForm();
         }
 
         // When the user clicks on <span> (x), close the modal
@@ -385,7 +486,87 @@
                 modal.style.display = "none";
             }
         }
+
+        // Show login form
+        function showLoginForm() {
+            var loginForm = document.getElementById("loginForm");
+            loginForm.style.display = "block";
+            // Hide unnecessary fields
+            var patientForm = document.getElementById("patientForm");
+            var doctorForm = document.getElementById("doctorForm");
+            patientForm.style.display = "none";
+            doctorForm.style.display = "none";
+        }
+
+        // Show Patient Form
+        var patientBtn = document.getElementById("patientBtn");
+        var patientForm = document.getElementById("patientForm");
+        patientBtn.onclick = function () {
+            modal.style.display = "block"; // Display modal
+            patientForm.style.display = "block";
+            doctorForm.style.display = "none";
+            hideLoginForm();
+        }
+
+        // Show Doctor Form
+        var doctorBtn = document.getElementById("doctorBtn");
+        var doctorForm = document.getElementById("doctorForm");
+
+        doctorBtn.onclick = function () {
+            modal.style.display = "block"; // Display modal
+            doctorForm.style.display = "block";
+            patientForm.style.display = "none";
+            hideLoginForm();
+        }
+
+        // Hide login form
+        function hideLoginForm() {
+            var loginForm = document.getElementById("loginForm");
+            loginForm.style.display = "none";
+        }
+
+        // Show pop-up message on successful login form submission
+        document.getElementById("loginForm").onsubmit = function (event) {
+            // Prevent default form submission
+            event.preventDefault();
+            // Show pop-up message
+            alert("Logged in successfully!");
+            // Close the modal
+            modal.style.display = "none";
+            // You can add additional functionality here such as redirecting the user to another page
+        }
+
+        // Redirect to patient signup page after filling patient signup form
+        document.getElementById("patientSignupForm").onsubmit = function () {
+            // Get form data
+            var formData = {
+                patientName: document.getElementById("patientName").value,
+                patientPhone: document.getElementById("patientPhone").value,
+                patientDOB: document.getElementById("patientDOB").value,
+                patientAddress: document.getElementById("patientAddress").value
+            };
+            // Store form data in sessionStorage
+            sessionStorage.setItem("patientFormData", JSON.stringify(formData));
+            // Redirect to patient signup page
+            window.location.href = "patient_window.html";
+            return false; // Prevent default form submission
+        }
+
+        // Redirect to doctor signup page after filling doctor signup form
+        document.getElementById("doctorSignupForm").onsubmit = function () {
+            // Get form data
+            var formData = {
+                doctorName: document.getElementById("doctorName").value,
+                doctorSpecialization: document.getElementById("doctorSpecialization").value,
+                doctorAvailability: document.getElementById("doctorAvailability").value
+            };
+            sessionStorage.setItem("doctorFormData", JSON.stringify(formData));
+            window.location.href = "doc_window.html";
+            return false; // Prevent default form submission
+        }
     </script>
+
+
 
 </body>
 
