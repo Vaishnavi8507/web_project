@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-+mFNK84PgXH2y4GAdi2GBjJ5UIqU8tGJGgADj/AgcS/boG3Pbp7SkF/43VckZ6OqQwjr0j/zyv5JYzvjLISBUQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .details-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .patient-info {
+            width: 300px;
+            /* Adjust the width as needed */
+            padding: 20px;
+            border-radius: 5px;
+            margin-right: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        img {
+            display: none;
+            /* Hide the image */
+        }
+
+        #patientDetails {
+            margin-left: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container .postpone-btn {
+            display: flex;
+            align-items: center;
+        }
+
+        .button-container .postpone-btn i {
+            margin-right: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h2>Appointment Details</h2>
+    <div style="display: flex;">
+        <!-- Doctor Details Container -->
+        <div style="margin-right: 20px;">
+            <h3>Doctor Details</h3>
+            <div id="doctorDetails"></div>
+        </div>
+
+        <!-- Patient Appointment Details Container -->
+        <div class="details-container">
+            <h3>Patient Appointment Details</h3>
+            <p><strong>Patient Name:</strong> <span id="patientName"></span></p>
+            <p><strong>Appointment Date:</strong> <span id="appointmentDate"></span></p>
+            <p><strong>Appointment Time:</strong> <span id="appointmentTime"></span></p>
+            <p><strong>Remarks:</strong> <span id="remarks"></span></p>
+            <p><strong>Symptoms:</strong> <span id="symptoms"></span></p>
+            <div class="button-container">
+                <button class="postpone-btn"><i class="fas fa-calendar-alt"></i> Postpone</button>
+                <button>Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve doctor form data from sessionStorage
+        var doctorFormData = sessionStorage.getItem("doctorFormData");
+        if (doctorFormData) {
+            // Parse the JSON data
+            var doctorData = JSON.parse(doctorFormData);
+
+            // Populate the container with the retrieved doctor data
+            document.getElementById("doctorDetails").innerHTML = `
+                <p>Name: ${doctorData.doctorName}</p>
+                <p>Specialization: ${doctorData.doctorSpecialization}</p>
+                <p>Availability: ${doctorData.doctorAvailability}</p>
+            `;
+        }
+
+        // Function to fetch appointment details from URL
+        function fetchAppointmentDetailsFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientName = urlParams.get('name');
+            const appointmentDate = urlParams.get('appointmentDate');
+            const appointmentTime = urlParams.get('appointmentTime');
+            const remarks = urlParams.get('remarks');
+            const symptoms = urlParams.get('symptoms');
+
+            // Update appointment details in the patient dashboard
+            document.getElementById("patientName").innerText = patientName;
+            document.getElementById("appointmentDate").innerText = appointmentDate;
+            document.getElementById("appointmentTime").innerText = appointmentTime;
+            document.getElementById("remarks").innerText = remarks;
+            document.getElementById("symptoms").innerText = symptoms;
+        }
+
+        // Call the function to fetch appointment details from URL
+        fetchAppointmentDetailsFromURL();
+    </script>
+</body>
+
+</html>
